@@ -142,4 +142,3 @@ $_SESSION['reg_lname'] = "";
 $_SESSION['reg_email'] = "";
 $_SESSION['reg_email2'] = "";
 }
-?>
