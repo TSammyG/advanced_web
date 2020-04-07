@@ -3,17 +3,20 @@
 include("includes/header.php");
 /*session_destroy();*/ // This code can be used to log the user out whenever they refresh their page
 ?>
-<div class="user_details column"> <!-- By separating them with a space we can have 2 classes -->
-    <a href="#"> <img src="<?php echo $user['profile_pic']; ?>" </a>
+<div class="user_details column">
+    <!-- By separating them with a space we can have 2 classes -->
+    <a href="#">
+        <img src="<?php echo $user['profile_pic']; ?>" />
+    </a>
     <div class="user_details_left_right">
-        <a href="#"><?php
-
+        <a href="#">
+            <?php
             echo $user['first_name'] . " " . $user['last_name'];
-
             ?>
             <br>
         </a>
-        <?php echo "Posts: " . $user['num_post'] . "<br>";
+        <?php
+        echo "Posts: " . $user['num_post'] . "<br>";
         echo "Likes: " . $user['num_like'];
         ?>
     </div>
