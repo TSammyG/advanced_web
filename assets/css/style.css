@@ -1,0 +1,92 @@
+html {
+    font-family: 'Poppins', "Century Gothic", sans-serif;
+}
+
+body {
+    line-height: 17px;
+    background-color: #E6EAE8;
+}
+
+.top_bar {
+    width:100%;
+    min-width: 1050px;
+    height: 60px;
+    background-color: #3498db;
+    border-bottom: 0.25em solid #233bb3;
+    margin: 0 0 10px 0;
+    display: inline-flex;
+    position: fixed;
+    z-index: 10; /* Ensures the bar doesn't get overlapped by other page content */
+}
+header h1 {
+    margin-top: 0;
+    margin-bottom: 0;
+    color: #000000;
+    text-shadow: #000 0.5px 0.5px 0px;
+}
+.logo a {
+    font-family: 'Poppins', 'Century Gothic', sans-serif;
+    margin-left: 10px;
+    font-size: 20px;
+    position: relative;
+    top: 9px;
+    margin-top: 0;
+    margin-bottom: 0;
+    color: #000000;
+    text-shadow: #000 0.5px 0.5px 0px;
+}
+
+nav {
+    float: right;
+    right: 1px;
+    position: absolute;
+    margin: 10px;
+}
+
+nav a{
+    position: relative;
+    color: #fff;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+nav a:hover {
+    border-bottom: 7px solid #e67e22;
+    color: #ffffff;
+}
+
+.wrapper {
+    margin: 0 auto; /* When only including 2 values, it will assume the first applies to the top and bottom, and the 2nd to left and right */
+    top: 50px;
+    position: relative;
+    padding: 0 10px;
+    width: 75%;
+    min-width: 950px;
+}
+
+.column {
+    background-color: #fff;
+    padding: 10px;
+    border: 1px solid #D9D9D9;
+    border-radius: 5px;
+    box-shadow: 1px 1px 1px #D9D9D9;
+    z-index: -1;
+}
+
+.user_details {
+    width: 650px;
+    float: left;
+    margin-bottom: 20px;
+}
+
+.user_details_left_right {
+    width: 125px;
+    display: inline-block;
+    position: absolute;
+}
+
+.user_details img {
+    height: 125px;
+    border-radius: 5px;
+    margin-right: 5px;
+}
