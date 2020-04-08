@@ -42,10 +42,10 @@ class Post
             //Insert notification
 
             //Update post count for user
-            $num_posts = $this->user_obj->getNumPosts();
+            $num_post = $this->user_obj->getNumPosts();
             //Increases post count by 1
-            $num_posts++;
-            $update_query = mysqli_query($this->con, "UPDATE users SET num_posts='$num_posts' 
+            $num_post++;
+            $update_query = mysqli_query($this->con, "UPDATE users SET num_post='$num_post' 
             WHERE username='$added_by'");
         }
     }
