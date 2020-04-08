@@ -6,7 +6,7 @@ include("includes/classes/Post.php");
 /*session_destroy();*/ // This code can be used to log the user out whenever they refresh their page
 
 
-if(isset($_POST['post'])) {
+if (isset($_POST['post'])) {
     $post = new Post($con, $userLoggedIn);
     $post->submitPost($_POST['post_text'], 'none');
 }
@@ -14,11 +14,11 @@ if(isset($_POST['post'])) {
 ?>
 <div class="user_details column">
     <!-- By separating them with a space we can have 2 classes -->
-    <a href="<?php echo $userLoggedIn;?>">
+    <a href="<?php echo $userLoggedIn; ?>">
         <img src="<?php echo $user['profile_pic']; ?>" />
     </a>
     <div class="user_details_left_right">
-        <a href="<?php echo $userLoggedIn;?>">
+        <a href="<?php echo $userLoggedIn; ?>">
             <?php
             echo $user['first_name'] . " " . $user['last_name'];
             ?>

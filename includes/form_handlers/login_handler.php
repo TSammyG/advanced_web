@@ -1,6 +1,6 @@
 <?php
 
-if(isset($_POST['login_button'])) {
+if (isset($_POST['login_button'])) {
 
     $email = filter_var($_POST['log_email'], FILTER_SANITIZE_EMAIL); // This sanitises the email
 
@@ -12,7 +12,7 @@ if(isset($_POST['login_button'])) {
     $check_login_query = mysqli_num_rows($check_database_query);
 
     // If there is 1 row returned, they've logged in successfully
-    if($check_login_query == 1) {
+    if ($check_login_query == 1) {
         // This allows us to access the query's results
         $row = mysqli_fetch_array($check_database_query);
         // By accessing this row, we can see the aforementioned query's results
@@ -21,7 +21,7 @@ if(isset($_POST['login_button'])) {
         // Find the email they entered and see if it is closed
         $user_closed_query = mysqli_query($con, "SELECT * FROM users WHERE email='$email' AND user_closed = 'yes'");
         // If the email is found i.e 1 result is found
-        if(mysqli_num_rows($user_closed_query) == 1) {
+        if (mysqli_num_rows($user_closed_query) == 1) {
             //Close the account
             $reopen_account = mysqli_query($con, "UPDATE users SET user_closed='no' WHERE email='$email'");
         }
@@ -31,8 +31,7 @@ if(isset($_POST['login_button'])) {
         $_SESSION['username'] = $username;
         header("Location: index.php");
         exit();
-    }
-    else {
+    } else {
         array_push($error_array, "Email or password was incorrect<br>");
     }
 }

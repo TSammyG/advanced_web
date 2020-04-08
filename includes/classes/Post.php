@@ -2,7 +2,6 @@
 
 class Post
 {
-
     private $user_obj;
     private $con;
 
@@ -35,7 +34,6 @@ class Post
                 $user_to = "none";
             }
 
-
             //Insert post
             $query = mysqli_query($this->con, "INSERT INTO posts VALUES('', '$body', '$added_by,' '$user_to', 
             '$date_added', 'no', 'no', '0')");
@@ -49,10 +47,6 @@ class Post
             $num_posts++;
             $update_query = mysqli_query($this->con, "UPDATE users SET num_posts='$num_posts' 
             WHERE username='$added_by'");
-
-
         }
     }
-
 }
-

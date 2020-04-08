@@ -94,45 +94,44 @@ nav a:hover {
 }
 
 .main_column {
-    float: right;
-    width: 70%;
-    z-index: -1;
-    min-height: 160px;
+  float: right;
+  width: 70%;
+  z-index: -1;
+  min-height: 160px;
 }
 
 .post_form {
-    width: 100%;
+  width: 100%;
 }
 
 .post_form textarea {
-    width: 85%;
-    height: 60px;
-    border-radius: 5px;
-    margin-right: 5px;
-    border: 1px solid #D9d9d9;
-    font-size: 20px;
-    padding: 5px;
-
+  width: 85%;
+  height: 60px;
+  border-radius: 5px;
+  margin-right: 5px;
+  border: 1px solid #d9d9d9;
+  font-size: 20px;
+  padding: 5px;
 }
 
 textarea:focus {
-    outline: 0;
+  outline: 0;
 }
 
 .post_form input[type="submit"] {
-    width: 10%;
-    height: 60px;
-    border: none;
-    border-radius: 5px;
-    background-color: #3498db;
-    color: #fff;
-    text-shadow: #000 0.5px 0.5px 0px;
-    font-size: 90%;
-    position: absolute;
-    outline: 0;
-    margin: 0;
+  width: 10%;
+  height: 60px;
+  border: none;
+  border-radius: 5px;
+  background-color: #3498db;
+  color: #fff;
+  text-shadow: #000 0.5px 0.5px 0px;
+  font-size: 90%;
+  position: absolute;
+  outline: 0;
+  margin: 0;
 }
 
 .post-form input[type="submit"]:active {
-    padding: 5px 4px 4px 5px;
+  padding: 5px 4px 4px 5px;
 }
