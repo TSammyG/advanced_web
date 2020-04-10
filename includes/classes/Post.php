@@ -50,6 +50,17 @@ class Post
         }
     }
 
+    private function pluraliseMessage($interval, $message_to_pluralise)
+    {
+        $pluralisedMessage = $message_to_pluralise;
+
+        if ($interval > 1) {
+            $pluralisedMessage .= 's';
+        }
+
+        return $pluralisedMessage;
+    }
+
     public function loadPostsFriends()
     {
         $str = ""; // String to return
@@ -84,32 +95,16 @@ class Post
             $last_name = $user_row['last_name'];
             $profile_pic = $user_row['profile_pic'];
 
-
             //Timeframe
             $date_time_now = date("Y-m-d H:i:s");
             $start_date = new DateTime($date_time); //Time of post
             $end_date = new DateTime($date_time_now); //Current time
             $interval = $start_date->diff($end_date); //Difference between dates
             if ($interval->y >= 1) {
-                if ($interval == 1)
-                    $time_message = $interval->y . " year ago"; //1 year ago
-                else
-                    $time_message = $interval->y . " years ago"; //>1 year ago
-
+                $time_message = $interval->y . " {$this->pluraliseMessage($interval->y, "year")} ago";
             } else if ($interval->m >= 1) {
-                if ($interval->d == 0) {
-                    $days = " ago";
-                } else if ($interval->d == 1) {
-                    $days = $interval->d . " day ago";
-                } else {
-                    $days = $interval->d . " days ago";
-                }
-
-                if ($interval->m == 1) {
-                    $time_message = $interval->m . " month" . $days;
-                } else {
-                    $time_message = $interval->m . " months" . $days;
-                }
+                $days = $interval->d . " {$this->pluraliseMessage($interval->d, "day")} ago";
+                $time_message = $interval->m . " {$this->pluraliseMessage($interval->m, "month")}" . $days;
             } else if ($interval->d >= 1) {
                 if ($interval->d == 1) {
                     $time_message = "Yesterday";
@@ -117,23 +112,13 @@ class Post
                     $time_message = $interval->d . " days ago";
                 }
             } else if ($interval->h >= 1) {
-                if ($interval->h == 1) {
-                    $time_message = $interval->h . " hour ago";
-                } else {
-                    $time_message = $interval->h . " hours ago";
-                }
+                $time_message = $interval->h . " {$this->pluraliseMessage($interval->h, "hour")} ago";
             } else if ($interval->i >= 1) {
-                if ($interval->i == 1) {
-                    $time_message = $interval->i . " minute ago";
-                } else {
-                    $time_message = $interval->i . " minutes ago";
-                }
+                $time_message = $interval->i . " {$this->pluraliseMessage($interval->i, "minute")} ago";
+            } else if ($interval->s < 30) {
+                $time_message = $interval->s . " just now";
             } else {
-                if ($interval->s < 30) {
-                    $time_message = $interval->s . " just now";
-                } else {
-                    $time_message = $interval->s . " seconds ago";
-                }
+                $time_message = $interval->s . " seconds ago";
             }
             $str .= "<div class='status_post'>
                        <div class='post_profile_pic'>
@@ -148,15 +133,8 @@ class Post
                             $body
                             <br>
                             </div>
-                            
                      </div>";
-
         }
-
         echo $str;
     }
-
 }
-
-
-?>
