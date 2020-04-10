@@ -100,25 +100,25 @@ class Post
             $start_date = new DateTime($date_time); //Time of post
             $end_date = new DateTime($date_time_now); //Current time
             $interval = $start_date->diff($end_date); //Difference between dates
-            if ($interval->y >= 1) {
+            if ($interval->y > 0) {
                 $time_message = $interval->y . " {$this->pluraliseMessage($interval->y, "year")} ago";
-            } else if ($interval->m >= 1) {
+            } else if ($interval->m > 0) {
                 $days = $interval->d . " {$this->pluraliseMessage($interval->d, "day")} ago";
                 $time_message = $interval->m . " {$this->pluraliseMessage($interval->m, "month")}" . $days;
-            } else if ($interval->d >= 1) {
+            } else if ($interval->d > 0) {
                 if ($interval->d == 1) {
                     $time_message = "Yesterday";
                 } else {
                     $time_message = $interval->d . " days ago";
                 }
-            } else if ($interval->h >= 1) {
+            } else if ($interval->h > 0) {
                 $time_message = $interval->h . " {$this->pluraliseMessage($interval->h, "hour")} ago";
-            } else if ($interval->i >= 1) {
+            } else if ($interval->i > 0) {
                 $time_message = $interval->i . " {$this->pluraliseMessage($interval->i, "minute")} ago";
-            } else if ($interval->s < 30) {
-                $time_message = $interval->s . " just now";
+            } else if ($interval->s > 0) {
+                $time_message = $interval->s . " {$this->pluraliseMessage($interval->s, "second")} ago";
             } else {
-                $time_message = $interval->s . " seconds ago";
+                $time_message = "Just now";
             }
             $str .= "<div class='status_post'>
                        <div class='post_profile_pic'>
