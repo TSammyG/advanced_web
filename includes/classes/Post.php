@@ -111,11 +111,7 @@ class Post
                 $days = $this->createTimeMessage($interval->d, "day");
                 $time_message =  $this->createTimeMessage($interval->m, "month") . $days;
             } else if ($interval->d > 0) {
-                if ($interval->d == 1) {
-                    $time_message = "Yesterday";
-                } else {
-                    $time_message = $this->createTimeMessage($interval->d, "day");
-                }
+                $time_message = $interval->d == 1 ? "Yesterday" : $this->createTimeMessage($interval->d, "day");
             } else if ($interval->h > 0) {
                 $time_message = $this->createTimeMessage($interval->h, "hour");
             } else if ($interval->i > 0) {
