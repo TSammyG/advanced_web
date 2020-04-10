@@ -61,9 +61,31 @@ class Post
         return $pluralisedMessage;
     }
 
-    private function createTimeMessage($interval, $unit_of_time)
+    private function createSingleTimeMessage($interval, $unit_of_time)
     {
         return "{$interval} {$this->pluraliseMessage($interval,$unit_of_time)} ago";
+    }
+
+    private function getTimeMessage($interval)
+    {
+        $time_message = "";
+        if ($interval->y > 0) {
+            $time_message = $this->createSingleTimeMessage($interval->y, "year");
+        } else if ($interval->m > 0) {
+            $days = $this->createSingleTimeMessage($interval->d, "day");
+            $time_message =  $this->createSingleTimeMessage($interval->m, "month") . $days;
+        } else if ($interval->d > 0) {
+            $time_message = $interval->d == 1 ? "Yesterday" : $this->createSingleTimeMessage($interval->d, "day");
+        } else if ($interval->h > 0) {
+            $time_message = $this->createSingleTimeMessage($interval->h, "hour");
+        } else if ($interval->i > 0) {
+            $time_message = $this->createSingleTimeMessage($interval->i, "minute");
+        } else if ($interval->s > 0) {
+            $time_message = $this->createSingleTimeMessage($interval->s, "second");
+        } else {
+            $time_message = "Just now";
+        }
+        return $time_message;
     }
 
     public function loadPostsFriends()
@@ -105,22 +127,7 @@ class Post
             $start_date = new DateTime($date_time); //Time of post
             $end_date = new DateTime($date_time_now); //Current time
             $interval = $start_date->diff($end_date); //Difference between dates
-            if ($interval->y > 0) {
-                $time_message = $this->createTimeMessage($interval->y, "year");
-            } else if ($interval->m > 0) {
-                $days = $this->createTimeMessage($interval->d, "day");
-                $time_message =  $this->createTimeMessage($interval->m, "month") . $days;
-            } else if ($interval->d > 0) {
-                $time_message = $interval->d == 1 ? "Yesterday" : $this->createTimeMessage($interval->d, "day");
-            } else if ($interval->h > 0) {
-                $time_message = $this->createTimeMessage($interval->h, "hour");
-            } else if ($interval->i > 0) {
-                $time_message = $this->createTimeMessage($interval->i, "minute");
-            } else if ($interval->s > 0) {
-                $time_message = $this->createTimeMessage($interval->s, "second");
-            } else {
-                $time_message = "Just now";
-            }
+            $time_message = $this->getTimeMessage($interval);
             $str .= "<div class='status_post'>
                        <div class='post_profile_pic'>
                             <img src='$profile_pic' width='50'>
