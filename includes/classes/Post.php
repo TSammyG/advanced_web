@@ -19,7 +19,7 @@ class Post
 
         // For recognising new lines
         $body = str_replace('\r\n', '\n', $body); // Looks for a carried return followed by a new line
-        $body = nl2br($body);
+        $body = nl2br($body); // nl = new line, 2 = to, br = line break
 
         $check_empty = preg_replace('/\s+/', '', $body); //Deletes all spaces
 
@@ -35,7 +35,7 @@ class Post
             }
 
             //Insert post
-            $query = mysqli_query($this->con, "INSERT INTO posts VALUES('', '$body', '$added_by,' '$user_to', 
+            $query = mysqli_query($this->con, "INSERT INTO posts VALUES('', '$body', '$added_by', '$user_to', 
             '$date_added', 'no', 'no', '0')");
             $returned_id = mysqli_insert_id($this->con);
 
@@ -50,3 +50,5 @@ class Post
         }
     }
 }
+
+/**/

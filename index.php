@@ -9,6 +9,7 @@ include("includes/classes/Post.php");
 if (isset($_POST['post'])) {
     $post = new Post($con, $userLoggedIn);
     $post->submitPost($_POST['post_text'], 'none');
+    header("Location: index.php"); // If a post has been made, stops it from being posted twice if page is refreshed
 }
 
 ?>
@@ -39,8 +40,6 @@ if (isset($_POST['post'])) {
 
     <?php
 
-    $user_obj = new User($con, $userLoggedIn);
-    echo $user_obj->getFirstAndLastName();
 
     ?>
 
