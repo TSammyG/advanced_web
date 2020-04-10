@@ -50,15 +50,20 @@ class Post
         }
     }
 
-    private function pluraliseMessage($interval, $message_to_pluralise)
+    private function pluraliseMessage($interval, $unit_of_time)
     {
-        $pluralisedMessage = $message_to_pluralise;
+        $pluralisedMessage = $unit_of_time;
 
         if ($interval != 1) {
             $pluralisedMessage .= 's';
         }
 
         return $pluralisedMessage;
+    }
+
+    private function createTimeMessage($interval, $unit_of_time)
+    {
+        return "{$interval} {$this->pluraliseMessage($interval,$unit_of_time)} ago";
     }
 
     public function loadPostsFriends()
@@ -101,22 +106,22 @@ class Post
             $end_date = new DateTime($date_time_now); //Current time
             $interval = $start_date->diff($end_date); //Difference between dates
             if ($interval->y > 0) {
-                $time_message = $interval->y . " {$this->pluraliseMessage($interval->y, "year")} ago";
+                $time_message = $this->createTimeMessage($interval->y, "year");
             } else if ($interval->m > 0) {
-                $days = $interval->d . " {$this->pluraliseMessage($interval->d, "day")} ago";
-                $time_message = $interval->m . " {$this->pluraliseMessage($interval->m, "month")}" . $days;
+                $days = $this->createTimeMessage($interval->d, "day");
+                $time_message =  $this->createTimeMessage($interval->m, "month") . $days;
             } else if ($interval->d > 0) {
                 if ($interval->d == 1) {
                     $time_message = "Yesterday";
                 } else {
-                    $time_message = $interval->d . " days ago";
+                    $time_message = $this->createTimeMessage($interval->d, "day");
                 }
             } else if ($interval->h > 0) {
-                $time_message = $interval->h . " {$this->pluraliseMessage($interval->h, "hour")} ago";
+                $time_message = $this->createTimeMessage($interval->h, "hour");
             } else if ($interval->i > 0) {
-                $time_message = $interval->i . " {$this->pluraliseMessage($interval->i, "minute")} ago";
+                $time_message = $this->createTimeMessage($interval->i, "minute");
             } else if ($interval->s > 0) {
-                $time_message = $interval->s . " {$this->pluraliseMessage($interval->s, "second")} ago";
+                $time_message = $this->createTimeMessage($interval->s, "second");
             } else {
                 $time_message = "Just now";
             }
