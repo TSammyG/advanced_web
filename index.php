@@ -40,6 +40,9 @@ if (isset($_POST['post'])) {
 
     <?php
 
+   // $post = new Post($con, $userLoggedIn);
+    // $post->loadPostsFriends();
+
 
     ?>
 
