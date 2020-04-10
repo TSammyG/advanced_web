@@ -54,7 +54,7 @@ class Post
     {
         $pluralisedMessage = $message_to_pluralise;
 
-        if ($interval > 1) {
+        if ($interval != 1) {
             $pluralisedMessage .= 's';
         }
 
