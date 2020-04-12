@@ -76,18 +76,15 @@ if (isset($_POST['post'])) {
                     data: "page=" + page + "&userLoggedIn" + userLoggedIn,
                     cache: false,
 
-                success: function (response) {
+                    success: function (response) {
+                        $('.posts_area').find('.nextPage').remove(); //Removes current .nextpage
+                        $('.posts_area').find('.noMorePosts').remove(); //Removes current .nomoreposts
 
-                    $('.posts_area').find('.nextPage').remove(); //Removes current .nextpage
-                    $('.posts_area').find('.noMorePosts').remove(); //Removes current .nomoreposts
+                        $('#loading').hide();
+                        $('.posts_area').append(response);
 
-                    $('#loading').hide();
-                    $('.posts_area').append(response);
-
-                }
-
-
-            });
+                    }
+                });
 
             } //end if
 
