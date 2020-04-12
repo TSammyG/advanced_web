@@ -1,5 +1,4 @@
-<?php
-/* This include calls the code from header.php, letting us concentrate on the code unique to the page */
+<?php /* This include calls the code from header.php, letting us concentrate on the code unique to the page */
 include("includes/header.php");
 include("includes/classes/User.php");
 include("includes/classes/Post.php");
@@ -15,9 +14,7 @@ if (isset($_POST['post'])) {
 ?>
 <div class="user_details column">
     <!-- By separating them with a space we can have 2 classes -->
-    <a href="<?php echo $userLoggedIn; ?>">
-        <img src="<?php echo $user['profile_pic']; ?>"/>
-    </a>
+    <a href="<?php echo $userLoggedIn; ?>"><img src="<?php echo $user['profile_pic']; ?>"/></a>
     <div class="user_details_left_right">
         <a href="<?php echo $userLoggedIn; ?>">
             <?php

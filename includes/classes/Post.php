@@ -14,8 +14,7 @@ class Post
     public function submitPost($body, $user_to)
     {
         $body = strip_tags($body); // Removes HTML tags
-        $body = mysqli_real_escape_string($this->con, $body); // Escapes any special characters with an apostrophe
-        // that could be mistaken for a single quote, for example
+        $body = mysqli_real_escape_string($this->con, $body); // Escapes any special characters with an apostrophe that could be mistaken for a single quote, for example
         $check_empty = preg_replace('/\s+/', '', $body); //Deletes all spaces
 
         // For recognising new lines
