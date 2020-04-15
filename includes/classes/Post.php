@@ -1,206 +1,238 @@
 <?php
-class Post {
-    private $user_obj;
-    private $con;
 
-    public function __construct($con, $user){
-        $this->con = $con;
-        $this->user_obj = new User($con, $user);
+class Post
+{
+    private $_user_obj;
+    private $_con;
+
+    /**
+     * Constructor
+     *
+     * @param mysqli|false $con The connection to the database
+     * @param string $user The details of the user as a string
+     */
+    public function __construct($con, $user)
+    {
+        $this->_con = $con;
+        $this->_user_obj = new User($con, $user);
     }
 
-    public function submitPost($body, $user_to) {
+    /**
+     * Creates a post
+     *
+     * @param string $body The body of the post
+     * @param string $user_to The user who created the post
+     * @return void
+     */
+    public function submitPost($body, $user_to)
+    {
         $body = strip_tags($body); //Removes HTML tags
-        $body = mysqli_real_escape_string($this->con, $body);// Escapes any special characters with an apostrophe that could be mistaken for a single quote, for example
+        $body = mysqli_real_escape_string($this->_con, $body);
         $check_empty = preg_replace('/\s+/', '', $body); //Deletes all spaces
 
-        if($check_empty != "") {
-
-
+        if ($check_empty != "") {
             //Current date and time
             $date_added = date("Y-m-d H:i:s");
             //Get username
-            $added_by = $this->user_obj->getUsername();
+            $added_by = $this->_user_obj->getUsername();
 
             //If user is on own profile, user_to is 'none'
-            if($user_to == $added_by) {
+            if ($user_to == $added_by) {
                 $user_to = "none";
             }
 
             //insert post
-            $query = mysqli_query($this->con, "INSERT INTO posts VALUES('', '$body', '$added_by', '$user_to', '$date_added', 'no', 'no', '0')");
-            $returned_id = mysqli_insert_id($this->con);
+            $query_string = <<<EOQ
+            INSERT INTO posts 
+            VALUES(
+                '', '$body', '$added_by', '$user_to', '$date_added', 
+                'no', 'no', '0'
+            )
+            EOQ;
+            mysqli_query($this->_con, $query_string);
+            mysqli_insert_id($this->_con);
 
             //Insert notification
 
             //Update post count for user
-            $num_posts = $this->user_obj->getNumPosts();
-            $num_posts++;
-            $update_query = mysqli_query($this->con, "UPDATE users SET num_posts='$num_posts' WHERE username='$added_by'");
-
+            $num_post = $this->_user_obj->getNumPosts();
+            $num_post++;
+            $query_string = <<<EOQ
+            UPDATE users 
+            SET num_post='$num_post' 
+                WHERE username='$added_by'
+            EOQ;
+            mysqli_query($this->_con, $query_string);
         }
     }
 
-    public function loadPostsFriends($data, $limit) {
-
+    /**
+     * Loads posts from all friends of user
+     *
+     * @param array $data Data
+     * @param int $limit Page limit
+     * @return void
+     * @throws Exception
+     */
+    public function loadPostsFriends($data, $limit)
+    {
         $page = $data['page'];
-        $userLoggedIn = $this->user_obj->getUsername();
 
-        if($page == 1)
+        if ($page == 1) {
             $start = 0;
-        else
+        } else {
             $start = ($page - 1) * $limit;
+        }
 
+        $post_body = ""; //String to return
+        $user_query_string = <<<EOQ
+        SELECT * 
+        FROM posts 
+            WHERE deleted='no' 
+        ORDER BY id DESC
+        EOQ;
+        $data_query = mysqli_query($this->_con, $user_query_string);
 
-        $str = ""; //String to return
-        $data_query = mysqli_query($this->con, "SELECT * FROM posts WHERE deleted='no' ORDER BY id DESC");
-
-        if(mysqli_num_rows($data_query) > 0) {
-
-
-            $num_iterations = 0; //Number of results checked (not necasserily posted)
+        if (mysqli_num_rows($data_query) > 0) {
+            // Number of results checked (not necessarily posted)
+            $num_iterations = 0;
             $count = 1;
 
-            while($row = mysqli_fetch_array($data_query)) {
-                $id = $row['id'];
+            while ($row = mysqli_fetch_array($data_query)) {
                 $body = $row['body'];
                 $added_by = $row['added_by'];
                 $date_time = $row['date_added'];
 
-                //Prepare user_to string so it can be included even if not posted to a user
-                if($row['user_to'] == "none") {
+                // Prepare user_to string so it can be included
+                // even if not posted to a user
+                if ($row['user_to'] == "none") {
                     $user_to = "";
-                }
-                else {
-                    $user_to_obj = new User($con, $row['user_to']);
+                } else {
+                    $user_to_obj = new User($this->_con, $row['user_to']);
                     $user_to_name = $user_to_obj->getFirstAndLastName();
-                    $user_to = "to <a href='" . $row['user_to'] ."'>" . $user_to_name . "</a>";
+                    $user_to = "to <a href='{$row['user_to']}'>{$user_to_name}</a>";
                 }
 
                 //Check if user who posted, has their account closed
-                $added_by_obj = new User($this->con, $added_by);
-                if($added_by_obj->isClosed()) {
+                $added_by_obj = new User($this->_con, $added_by);
+                if ($added_by_obj->isClosed()) {
                     continue;
                 }
 
-
-
-                if($num_iterations++ < $start)
+                if ($num_iterations++ < $start) {
                     continue;
-
+                }
 
                 //Once 10 posts have been loaded, break
-                if($count > $limit) {
+                if ($count > $limit) {
                     break;
                 }
-                else {
-                    $count++;
-                }
+                $count++;
 
-                $user_details_query = mysqli_query($this->con, "SELECT first_name, last_name, profile_pic FROM users WHERE username='$added_by'");
+                $user_query_string = <<<EOQ
+                SELECT first_name, last_name, profile_pic 
+                FROM users 
+                    WHERE username='$added_by'
+                EOQ;
+                $user_details_query = mysqli_query($this->_con, $user_query_string);
                 $user_row = mysqli_fetch_array($user_details_query);
                 $first_name = $user_row['first_name'];
                 $last_name = $user_row['last_name'];
                 $profile_pic = $user_row['profile_pic'];
-
 
                 //Timeframe
                 $date_time_now = date("Y-m-d H:i:s");
                 $start_date = new DateTime($date_time); //Time of post
                 $end_date = new DateTime($date_time_now); //Current time
                 $interval = $start_date->diff($end_date); //Difference between dates
-                if($interval->y >= 1) {
-                    if($interval == 1)
-                        $time_message = $interval->y . " year ago"; //1 year ago
-                    else
-                        $time_message = $interval->y . " years ago"; //1+ year ago
-                }
-                else if ($interval-> m >= 1) {
-                    if($interval->d == 0) {
-                        $days = " ago";
-                    }
-                    else if($interval->d == 1) {
-                        $days = $interval->d . " day ago";
-                    }
-                    else {
-                        $days = $interval->d . " days ago";
-                    }
+                $time_message = $this->createTimeMessage($interval);
 
+                $post_body .= <<<EOL
+<div class='status_post'>
+    <div class='post_profile_pic'>
+        <img src='$profile_pic' width='50'>
+    </div>
 
-                    if($interval->m == 1) {
-                        $time_message = $interval->m . " month". $days;
-                    }
-                    else {
-                        $time_message = $interval->m . " months". $days;
-                    }
-
-                }
-                else if($interval->d >= 1) {
-                    if($interval->d == 1) {
-                        $time_message = "Yesterday";
-                    }
-                    else {
-                        $time_message = $interval->d . " days ago";
-                    }
-                }
-                else if($interval->h >= 1) {
-                    if($interval->h == 1) {
-                        $time_message = $interval->h . " hour ago";
-                    }
-                    else {
-                        $time_message = $interval->h . " hours ago";
-                    }
-                }
-                else if($interval->i >= 1) {
-                    if($interval->i == 1) {
-                        $time_message = $interval->i . " minute ago";
-                    }
-                    else {
-                        $time_message = $interval->i . " minutes ago";
-                    }
-                }
-                else {
-                    if($interval->s < 30) {
-                        $time_message = "Just now";
-                    }
-                    else {
-                        $time_message = $interval->s . " seconds ago";
-                    }
-                }
-
-                $str .= "<div class='status_post'>
-								<div class='post_profile_pic'>
-									<img src='$profile_pic' width='50'>
-								</div>
-
-								<div class='posted_by' style='color:#ACACAC;'>
-									<a href='$added_by'> $first_name $last_name </a> $user_to &nbsp;&nbsp;&nbsp;&nbsp;$time_message
-								</div>
-								<div id='post_body'>
-									$body
-									<br>
-								</div>
-
-							</div>
-							<hr>";
-
-
+    <div class='posted_by' style='color:#ACACAC;'>
+        <a href='$added_by'>
+            $first_name $last_name 
+        </a> 
+        $user_to &nbsp;&nbsp;&nbsp;&nbsp;$time_message
+    </div>
+    <div id='post_body'>
+        $body
+        <br>
+    </div>
+</div>
+<hr>
+EOL;
             } //End while loop
 
-            if($count > $limit)
-                $str .= "<input type='hidden' class='nextPage' value='" . ($page + 1) . "'>
-							<input type='hidden' class='noMorePosts' value='false'>";
-            else
-                $str .= "<input type='hidden' class='noMorePosts' value='true'><p style='text-align: centre;'> No more posts to show! </p>";
+            if ($count > $limit) {
+                $post_body .= <<<EOL
+                    <input type='hidden' class='nextPage' value='{($page + 1)}'>
+                    <input type='hidden' class='noMorePosts' value='false'>
+                EOL;
+            } else {
+                $post_body .= <<<EOL
+                    <input type='hidden' class='noMorePosts' value='true'>
+                    <p style='text-align: center;'>No more posts to show!</p>
+                EOL;
+            }
         }
 
-        echo $str;
-
-
+        echo $post_body;
     }
 
+    /**
+     * @param DateInterval $interval
+     * @return string
+     */
+    private function createTimeMessage($interval)
+    {
+        if ($interval->y > 0) {
+            $year = "year";
+            if ($interval->y > 1) {
+                $year .= "s";
+            }
+            $time_message = "{$interval->m} $year ago";
+        } elseif ($interval->m > 0) {
+            if ($interval->d == 0) {
+                $days = "ago";
+            } else if ($interval->d == 1) {
+                $days = $interval->d . "day ago";
+            } else {
+                $days = $interval->d . "days ago";
+            }
 
-
-
+            $month = "month";
+            if ($interval->m > 1) {
+                $month .= "s";
+            }
+            $time_message = "{$interval->m} {$month} {$days}";
+        } elseif ($interval->d > 0) {
+            if ($interval->d > 1) {
+                $time_message = "{$interval->d} days ago";
+            } else {
+                $time_message = "Yesterday";
+            }
+        } elseif ($interval->h > 0) {
+            $hour = "hour";
+            if ($interval->h > 1) {
+                $hour .= "s";
+            }
+            $time_message = "{$interval->h} $hour ago";
+        } elseif ($interval->i > 0) {
+            $minute = "minute";
+            if ($interval->i > 1) {
+                $minute .= "s";
+            }
+            $time_message = "{$interval->i} $minute ago";
+        } elseif ($interval->s >= 30) {
+            $time_message = "{$interval->s} seconds ago";
+        } else {
+            $time_message = "Just now";
+        }
+        return $time_message;
+    }
 }
-
-?>

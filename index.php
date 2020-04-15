@@ -15,7 +15,7 @@ if (isset($_POST['post'])) {
 ?>
 <div class="user_details column">
     <!-- By separating them with a space we can have 2 classes -->
-    <a href="<?php echo $userLoggedIn; ?>">  <img src="<?php echo $user['profile_pic']; ?>"> </a>
+    <a href="<?php echo $userLoggedIn; ?>"> <img src="<?php echo $user['profile_pic']; ?>"> </a>
 
     <div class="user_details_left_right">
         <a href="<?php echo $userLoggedIn; ?>">
@@ -25,8 +25,8 @@ if (isset($_POST['post'])) {
             ?>
         </a>
         <br>
-        <?php echo "Posts: " . $user['num_posts']. "<br>";
-        echo "Likes: " . $user['num_likes'];
+        <?php echo "Posts: " . $user['num_post'] . "<br>";
+        echo "Likes: " . $user['num_like'];
 
         ?>
     </div>
