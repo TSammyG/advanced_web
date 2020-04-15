@@ -69,19 +69,21 @@ class Post
     /**
      * Loads posts from all friends of user
      *
-     * @param array $data Data
      * @param int $limit Page limit
      * @return void
      * @throws Exception
      */
-    public function loadPostsFriends($data, $limit)
+    public function loadPostsFriends($limit)
     {
-        $page = $data['page'];
+        $page = $_REQUEST['page'];
+
 
         if ($page == 1) {
             $start = 0;
         } else {
+
             $start = ($page - 1) * $limit;
+
         }
 
         $post_body = ""; //String to return
@@ -169,8 +171,9 @@ EOL;
             } //End while loop
 
             if ($count > $limit) {
+                $new_page = $page + 1;
                 $post_body .= <<<EOL
-                    <input type='hidden' class='nextPage' value='{($page + 1)}'>
+                    <input type='hidden' class='nextPage' value='{$new_page}'>
                     <input type='hidden' class='noMorePosts' value='false'>
                 EOL;
             } else {
