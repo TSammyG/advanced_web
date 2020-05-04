@@ -101,6 +101,7 @@ class Post
             $count = 1;
 
             while ($row = mysqli_fetch_array($data_query)) {
+                $id = $row['id'];
                 $body = $row['body'];
                 $added_by = $row['added_by'];
                 $date_time = $row['date_added'];
@@ -142,6 +143,23 @@ class Post
                 $last_name = $user_row['last_name'];
                 $profile_pic = $user_row['profile_pic'];
 
+
+                ?>
+                <script>
+
+                    function toggle<?php echo $id; ?>() {
+                        const element = document.getElementById("toggleComment<?php echo $id?>");
+
+                        if (element.style.display === "block")
+                            element.style.display = "none";
+                        else
+                            element.style.display = "block";
+
+                    }
+
+                </script>
+                <?php
+
                 //Timeframe
                 $date_time_now = date("Y-m-d H:i:s");
                 $start_date = new DateTime($date_time); //Time of post
@@ -150,10 +168,10 @@ class Post
                 $time_message = $this->createTimeMessage($interval);
 
                 $post_body .= <<<EOL
-<div class='status_post'>
+<div class='status_post' onClick='toggle$id()'> 
     <div class='post_profile_pic'>
         <img src='$profile_pic' width='50'>
-    </div>
+    </div>  
 
     <div class='posted_by' style='color:#ACACAC;'>
         <a href='$added_by'>
@@ -165,6 +183,11 @@ class Post
         $body
         <br>
     </div>
+</div>
+<div class='post_comment' id='toggleComment$id' style='display:none;'>
+    <iframe src="comment_frame.php?post_id=$id" id="comment_iframe" frameborder="0">
+    
+    </iframe>
 </div>
 <hr>
 EOL;
@@ -238,4 +261,5 @@ EOL;
         }
         return $time_message;
     }
+
 }

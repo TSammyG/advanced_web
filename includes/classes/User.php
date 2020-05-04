@@ -1,4 +1,5 @@
 <?php
+
 class User
 {
     private $user;
@@ -34,6 +35,15 @@ class User
         return $row['first_name'] . " " . $row['last_name'];
     }
 
+    public function getProfilePic()
+    {
+        $username = $this->user['username'];
+        $query = mysqli_query($this->con, "SELECT first_name, last_name FROM users WHERE username='$username'");
+        $row = mysqli_fetch_array($query);
+
+        return $row['profile_pic'];
+    }
+
     public function isClosed()
     {
         $username = $this->user['username'];
@@ -41,5 +51,11 @@ class User
         $row = mysqli_fetch_array($query);
 
         return $row['user_closed'] == 'yes';
+    }
+
+    public function isFriend($username_to_check)
+    {
+        $usernameComma = "," . $username_to_check . ",";
+        return strstr($this->user['friend_array'], $usernameComma) || $username_to_check == $this->user['username'];
     }
 }
