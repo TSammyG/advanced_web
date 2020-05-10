@@ -1,7 +1,5 @@
 <?php /* This include calls the code from header.php, letting us concentrate on the code unique to the page */
 include("includes/header.php");
-include("includes/classes/User.php");
-include("includes/classes/Post.php");
 /*session_destroy();*/ // This code can be used to log the user out whenever they refresh their page
 
 
